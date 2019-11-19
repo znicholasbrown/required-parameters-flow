@@ -2,8 +2,6 @@ from prefect import Flow, task, Parameter
 import urllib.request
 from random import randrange
 
-parameter_map = {}
-
 @task(name="Query for Words")
 def words_query():
     url = "http://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain"
@@ -31,7 +29,8 @@ def print_params(task_params):
     for arg in task_params:
         print(arg)
 
-with Flow("Required Parameters Flow") as RequiredParameters_Flow:    
+with Flow("Required Parameters Flow") as RequiredParameters_Flow:
+    parameter_map = {}
     words = words_query()
 
     print(f"\tMaking required parameters!")
