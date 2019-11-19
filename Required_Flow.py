@@ -24,6 +24,7 @@ def words_query():
         random_index = randrange(words_length)
         print(f"\t\t{words[random_index]}")
 
+@task(name="Get Random Word")
 def random_word():
     return words[randrange(len(words))]
 
@@ -33,31 +34,27 @@ def print_params(task_params):
     for arg in task_params:
         print(arg)
 
-@task(name="Make Required Parameters")
-def make_params():
-    global parameter_map
+with Flow("Required Parameters Flow") as RequiredParameters_Flow:    
+    query_task = words_query()
+
     print(f"\tMaking required parameters!")
     for i in range(50):
-        word = random_word()
+        word = random_word(upstream_tasks=[query_task])
         val = randrange(10000)
         print(f"\t\tParameter {i}: {word}, {val}")
         parameter_map[i] = Parameter(word, default=val, required=True)
 
-
-with Flow("Required Parameters Flow") as RequiredParameters_Flow:    
-    query_task = words_query()
-
-    make_task = make_params(upstream_tasks=[query_task])
-
-    print_task = print_params(parameter_map, upstream_tasks=[query_task, make_task])
+    print_task = print_params(parameter_map, upstream_tasks=[query_task])
     print(print_task)
 
+RequiredParameters_Flow.run()
 
-RequiredParameters_Flow.deploy(
-    "Flow Schematics", 
-    base_image="python:3.7",
-    python_dependencies=[],
-    registry_url="znicholasbrown",
-    image_name="prefect_flow",
-    image_tag="required-parameters-flow",
-)
+
+# RequiredParameters_Flow.deploy(
+#     "Flow Schematics", 
+#     base_image="python:3.7",
+#     python_dependencies=[],
+#     registry_url="znicholasbrown",
+#     image_name="prefect_flow",
+#     image_tag="required-parameters-flow",
+# )
