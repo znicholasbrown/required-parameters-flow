@@ -2,27 +2,6 @@ from prefect import Flow, task, Parameter
 import urllib.request
 from random import randrange
 
-@task(name="Query for Words")
-def words_query():
-    url = "http://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain"
-    response = urllib.request.urlopen(url)
-    text = response.read().decode()
-    words = text.splitlines()
-
-    words_length = len(words)
-
-    print(f"\t50 random words from the dictionary: ")
-    # we'll print 50 random words
-    for i in range(50):
-        random_index = randrange(words_length)
-        print(f"\t\t{words[random_index]}")
-
-    return words
-
-@task(name="Get Random Word")
-def random_word(words):
-    return words[randrange(len(words))]
-
 @task(name="Print Required Parameters")
 def print_params(task_params):
     print(f"\tPrinting required parameters!")
@@ -31,16 +10,13 @@ def print_params(task_params):
 
 with Flow("Required Parameters Flow") as RequiredParameters_Flow:
     parameter_map = {}
-    words = words_query()
 
-    print(f"\tMaking required parameters!")
-    for i in range(50):
-        word = random_word(words, upstream_tasks=[words])
-        val = randrange(10000)
-        print(f"\t\tParameter {i}: {word}, {val}")
-        parameter_map[i] = Parameter(word, default=val, required=True)
+    print(f"\tGenerating required parameters")
+    for i in range(250):
+        print(f"\t\tParameter {i}: default_{i}")
+        parameter_map[i] = Parameter(f"Parameter_{i}", required=True)
 
-    print_task = print_params(parameter_map, upstream_tasks=[words])
+    print_task = print_params(parameter_map, upstream_tasks=[])
     print(print_task)
 
 
