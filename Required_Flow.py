@@ -3,14 +3,9 @@ import urllib.request
 from random import randrange
 
 parameter_map = {}
-words=[]
 
 @task(name="Query for Words")
 def words_query():
-    global words
-    if (len(words) > 0):
-        return
-    
     url = "http://svnweb.freebsd.org/csrg/share/dict/words?view=co&content-type=text/plain"
     response = urllib.request.urlopen(url)
     text = response.read().decode()
@@ -24,8 +19,10 @@ def words_query():
         random_index = randrange(words_length)
         print(f"\t\t{words[random_index]}")
 
+    return words
+
 @task(name="Get Random Word")
-def random_word():
+def random_word(words):
     return words[randrange(len(words))]
 
 @task(name="Print Required Parameters")
@@ -35,16 +32,16 @@ def print_params(task_params):
         print(arg)
 
 with Flow("Required Parameters Flow") as RequiredParameters_Flow:    
-    query_task = words_query()
+    words = words_query()
 
     print(f"\tMaking required parameters!")
     for i in range(50):
-        word = random_word(upstream_tasks=[query_task])
+        word = random_word(words, upstream_tasks=[words])
         val = randrange(10000)
         print(f"\t\tParameter {i}: {word}, {val}")
         parameter_map[i] = Parameter(word, default=val, required=True)
 
-    print_task = print_params(parameter_map, upstream_tasks=[query_task])
+    print_task = print_params(parameter_map, upstream_tasks=[words])
     print(print_task)
 
 RequiredParameters_Flow.run()
