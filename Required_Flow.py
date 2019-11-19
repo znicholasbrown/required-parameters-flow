@@ -24,19 +24,21 @@ def words_query():
         random_index = randrange(words_length)
         print(f"\t\t{words[random_index]}")
 
-@task(name="Get Random Words")
-def random_words():
+@task(name="Get Random Word")
+def random_word():
     return words[randrange(len(words))]
 
 @task(name="Print Required Parameters")
 def print_params(task_params):
+    print("\Printing required parameters!")
     for arg in task_params:
         print(arg)
 
 @task(name="Make Required Parameters")
 def make_params():
+    print("\tMaking required parameters!")
     for i in range(50):
-        parameter_map[i] = Parameter(random_words(), default=uniform(0, 100000), required=True)
+        parameter_map[i] = Parameter(random_word(), default=randrange(10000), required=True)
 
 
 with Flow("Required Parameters Flow") as RequiredParameters_Flow:
