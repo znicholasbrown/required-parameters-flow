@@ -42,7 +42,7 @@ with Flow("Required Parameters Flow") as RequiredParameters_Flow:
 RequiredParameters_Flow.deploy(
     "Flow Schematics", 
     base_image="python:3.7",
-    python_dependencies=["urllib", "random"],
+    python_dependencies=["random"],
     registry_url="znicholasbrown",
     image_name="prefect_flow",
     image_tag="required-parameters-flow",
