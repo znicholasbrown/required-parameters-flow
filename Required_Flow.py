@@ -20,8 +20,8 @@ def random_words():
     return words[uniform(0, len(words))]
 
 @task(name="Print Required Parameters")
-def print_params(task_args):
-    for arg in task_args:
+def print_params(task_params):
+    for arg in task_params:
         print(arg)
 
 @task(name="Make Required Parameters")
