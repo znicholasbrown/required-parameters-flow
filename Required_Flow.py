@@ -43,14 +43,12 @@ with Flow("Required Parameters Flow") as RequiredParameters_Flow:
     print_task = print_params(parameter_map, upstream_tasks=[words])
     print(print_task)
 
-RequiredParameters_Flow.run()
 
-
-# RequiredParameters_Flow.deploy(
-#     "Flow Schematics", 
-#     base_image="python:3.7",
-#     python_dependencies=[],
-#     registry_url="znicholasbrown",
-#     image_name="prefect_flow",
-#     image_tag="required-parameters-flow",
-# )
+RequiredParameters_Flow.deploy(
+    "Flow Schematics", 
+    base_image="python:3.7",
+    python_dependencies=[],
+    registry_url="znicholasbrown",
+    image_name="prefect_flow",
+    image_tag="required-parameters-flow",
+)
