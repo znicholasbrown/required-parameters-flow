@@ -5,7 +5,7 @@ p, q = Parameter("default_param", default=None), Parameter("required_param", req
 
 @task
 def type_check(param):
-    prefect.context.logger.info(f"Received val {p} of type {t}".format(p=param, t=type(param)))
+    prefect.context.logger.info("Received val {p} of type {t}".format(p=param, t=type(param)))
 
 with Flow("Parameter Type Testing") as Parameter_Type_Testing:
     type_check.map([p, q])
